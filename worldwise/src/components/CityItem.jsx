@@ -18,11 +18,16 @@ const flagemojiToPNG = (flag) => {
 }; // this function converts the flag emoji to a PNG image
 
 const CityItem = ({ city }) => {
-  const { cityName, emoji, date, id } = city;
+  const { cityName, emoji, date, id, position } = city;
+
   return (
     <li>
-      <Link className={styles.cityItem} to={`${id}`}>
-        {/* we pass the id to the Link component so that it can be used in the URL */}
+      <Link
+        className={styles.cityItem}
+        to={`${id}?lat=${position.lat}&lng=${position.lng}`}
+      >
+        {/* we pass the lat and lng and id to the Link component so that it can be used in the URL
+         */}
         <span className={styles.emoji}>{flagemojiToPNG(emoji)}</span>
         <h3 className={styles.name}>{cityName}</h3>
         <time className={styles.date}>{formatDate(date)}</time>
