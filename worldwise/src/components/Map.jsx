@@ -1,7 +1,14 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./Map.module.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
+import { useEffect, useState } from "react";
 import { useCities } from "../contexts/CitiesContext";
 
 const flagemojiToPNG = (flag) => {
@@ -20,15 +27,19 @@ const Map = () => {
 
   const [mapPosition, setMapPosition] = useState([40, 0]);
 
-  const [searchParams, setSearchParams] = useSearchParams(); // we use the useSearchParams hook to get the lat and lng from the URL
-  const lat = searchParams.get("lat"); // we use the get method to get the value of the lat parameter
-  const lng = searchParams.get("lng"); // we use the get method to get the value of the lng parameter
+  const [searchParams] = useSearchParams(); // we use the useSearchParams hook to get the lat and lng from the URL
+  const mapLat = searchParams.get("lat"); // we use the get method to get the value of the lat parameter
+  const mapLng = searchParams.get("lng"); // we use the get method to get the value of the lng parameter
+
+  useEffect(() => {
+    if (mapLat && mapLng) setMapPosition([mapLat, mapLng]);
+  }, [mapLat, mapLng]); // we call the setMapPosition function when the lat or lng change
 
   return (
     <div className={styles.mapContainer}>
       <MapContainer
         center={mapPosition}
-        zoom={13}
+        zoom={6}
         scrollWheelZoom={true}
         className={styles.map}
       >
@@ -55,9 +66,23 @@ const Map = () => {
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
         </Marker> */}
+        <ChangeCenter position={mapPosition} />
+        <DetectClick />
       </MapContainer>
     </div>
   );
 };
 
+function ChangeCenter({ position }) {
+  const map = useMap(); // we use the useMap hook to get the map instance
+  map.setView(position); // we call the setView method to change the map center
+  return null;
+} // this component changes the map center when the position prop changes
+
+function DetectClick() {
+  const navigate = useNavigate();
+  useMapEvents({
+    click: (e) => navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`),
+  }); // we use the useMapEvents hook to detect a click event on the map
+} // this component navigates to the form page when the map is clicked
 export default Map;
