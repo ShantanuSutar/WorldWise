@@ -1,6 +1,6 @@
 import styles from "./City.module.css";
 import { useEffect } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useCities } from "../contexts/CitiesContext";
 import Spinner from "./Spinner";
 import BackButton from "./BackButton";
@@ -40,7 +40,7 @@ function City() {
       <div className={styles.row}>
         <h6>City name</h6>
         <h3>
-          <span>{emoji}</span> {cityName}
+          <span>{flagemojiToPNG(emoji)}</span> {cityName}
         </h3>
       </div>
 

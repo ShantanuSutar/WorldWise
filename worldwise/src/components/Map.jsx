@@ -10,6 +10,8 @@ import {
 } from "react-leaflet";
 import { useEffect, useState } from "react";
 import { useCities } from "../contexts/CitiesContext";
+import { useGeolocation } from "../hooks/useGeolocation";
+import Button from "./Button";
 
 const flagemojiToPNG = (flag) => {
   var countryCode = Array.from(flag, (codeUnit) => codeUnit.codePointAt())
@@ -24,10 +26,15 @@ const Map = () => {
   const navigate = useNavigate(); // we use the useNavigate hook to navigate to the previous page
 
   const { cities } = useCities();
-
   const [mapPosition, setMapPosition] = useState([40, 0]);
-
   const [searchParams] = useSearchParams(); // we use the useSearchParams hook to get the lat and lng from the URL
+
+  const {
+    isLoading: isLoadingPosition,
+    position: geoLocationPosition,
+    getPosition,
+  } = useGeolocation(); // we use the useGeolocation hook to get the user's position
+
   const mapLat = searchParams.get("lat"); // we use the get method to get the value of the lat parameter
   const mapLng = searchParams.get("lng"); // we use the get method to get the value of the lng parameter
 
@@ -35,8 +42,18 @@ const Map = () => {
     if (mapLat && mapLng) setMapPosition([mapLat, mapLng]);
   }, [mapLat, mapLng]); // we call the setMapPosition function when the lat or lng change
 
+  useEffect(() => {
+    if (geoLocationPosition)
+      setMapPosition([geoLocationPosition.lat, geoLocationPosition.lng]);
+  }, [geoLocationPosition]); // we call the setMapPosition function when the geoLocationPosition changes
+
   return (
     <div className={styles.mapContainer}>
+      {!geoLocationPosition && (
+        <Button type="position" onClick={getPosition}>
+          {isLoadingPosition ? "Loading..." : "Use your position"}
+        </Button>
+      )}
       <MapContainer
         center={mapPosition}
         zoom={6}
