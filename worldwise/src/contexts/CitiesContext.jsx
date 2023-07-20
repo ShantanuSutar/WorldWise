@@ -1,11 +1,11 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 
 const BASE_URL = `http://localhost:3001`;
 
 const CitiesContext = createContext(); // creates a context object and stores it in the CitiesContext variable
 
 function CitiesProvider({ children }) {
-  const [cities, setCities] = useState([{}]);
+  const [cities, setCities] = useState([{}]); //
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -36,4 +36,12 @@ function CitiesProvider({ children }) {
   );
 }
 
-export { CitiesProvider };
+function useCities() {
+  // this function returns the context object stored in the CitiesContext variable
+  const context = useContext(CitiesContext);
+  if (context === undefined)
+    throw new Error("useCities must be used within a CitiesProvider");
+  return context;
+}
+
+export { CitiesProvider, useCities };
