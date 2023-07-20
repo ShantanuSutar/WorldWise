@@ -3,7 +3,7 @@
   max-height: 70%;
   background-color: var(--color-dark--2);
   border-radius: 7px;
-  overflow: scroll;
+  overflow: hidden;
 
   width: 100%;
   display: flex;
@@ -44,4 +44,8 @@
 .city a:visited {
   font-size: 1.6rem;
   color: var(--color-brand--1);
+}
+
+.city .back-button {
+  width: 20%;
 }
