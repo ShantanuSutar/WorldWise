@@ -19,8 +19,13 @@ const flagemojiToPNG = (flag) => {
 }; // this function converts the flag emoji to a PNG image
 
 const CityItem = ({ city }) => {
-  const { currentCity } = useCities();
+  const { currentCity, deleteCity } = useCities();
   const { cityName, emoji, date, id, position } = city;
+
+  function handleClick(e) {
+    e.preventDefault();
+    deleteCity(id);
+  } // this function calls the deleteCity function when the delete button is clicked
 
   return (
     <li>
@@ -36,7 +41,9 @@ const CityItem = ({ city }) => {
         <h3 className={styles.name}>{cityName}</h3>
         <time className={styles.date}>{formatDate(date)}</time>
         {/* we pass the date string to the formatDate function to format it */}
-        <button className={styles.deleteBtn}>&times;</button>
+        <button className={styles.deleteBtn} onClick={handleClick}>
+          &times;
+        </button>
       </Link>
     </li>
   );
