@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useCities } from "../contexts/CitiesContext";
 import { useGeolocation } from "../hooks/useGeolocation";
 import Button from "./Button";
+import { useUrlPosition } from "../hooks/useUrlPosition";
 
 const flagemojiToPNG = (flag) => {
   var countryCode = Array.from(flag, (codeUnit) => codeUnit.codePointAt())
@@ -23,11 +24,8 @@ const flagemojiToPNG = (flag) => {
 }; // this function converts the flag emoji to a PNG image
 
 const Map = () => {
-  const navigate = useNavigate(); // we use the useNavigate hook to navigate to the previous page
-
   const { cities } = useCities();
   const [mapPosition, setMapPosition] = useState([40, 0]);
-  const [searchParams] = useSearchParams(); // we use the useSearchParams hook to get the lat and lng from the URL
 
   const {
     isLoading: isLoadingPosition,
@@ -35,8 +33,7 @@ const Map = () => {
     getPosition,
   } = useGeolocation(); // we use the useGeolocation hook to get the user's position
 
-  const mapLat = searchParams.get("lat"); // we use the get method to get the value of the lat parameter
-  const mapLng = searchParams.get("lng"); // we use the get method to get the value of the lng parameter
+  const [mapLat, mapLng] = useUrlPosition();
 
   useEffect(() => {
     if (mapLat && mapLng) setMapPosition([mapLat, mapLng]);
